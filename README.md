@@ -6,7 +6,7 @@ A lightweight vacation rental booking platform built with Flask and SQLite. Brow
 
 ## Live Demo
 
-[http://localhost:5000](http://localhost:5000)
+[https://greenstay.onrender.com/](https://greenstay.onrender.com/) 
 
 ## Features
 
