@@ -24,8 +24,15 @@ app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'sta
 # CORS'u etkinleştir
 CORS(app)
 
-# SQLite veritabanı konfigürasyonu
-db_path = os.path.join(os.path.dirname(__file__), '..', 'database', 'airbnb.db')
+# SQLite veritabanı konfigürasyonu - RENDER COMPATIBLE
+db_dir = os.path.join(os.path.dirname(__file__), '..', 'database')
+os.makedirs(db_dir, exist_ok=True)
+db_path = os.path.join(db_dir, 'airbnb.db')
+
+# Eğer yazma izni yoksa, /tmp kullan (Render'de)
+if not os.access(db_dir, os.W_OK):
+    db_path = '/tmp/airbnb.db'
+
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
