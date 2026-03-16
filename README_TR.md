@@ -6,7 +6,7 @@ Python 3.12 ve SQLite ile yapılmış hafif bir tatil kiralama platformu. Özell
 
 ## Canlı Demo
 
-[http://localhost:5000](http://localhost:5000)
+[https://greenstay.onrender.com/](https://greenstay.onrender.com/)
 
 ## Özellikler
 
