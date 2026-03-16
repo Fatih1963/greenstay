@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenStay - Messages</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">Green<span>Stay</span></a>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/properties">Properties</a></li>
+                    <li><a href="/become-host">Become a Host</a></li>
+                    <li><a href="/login" id="loginLink">Login</a></li>
+                    <li><a href="/register" id="registerLink">Register</a></li>
+                    <li class="hidden" id="profileLink"><a href="/profile">My Profile</a></li>
+                    <li class="hidden" id="bookingsLink"><a href="/bookings">My Bookings</a></li>
+                    <li class="hidden" id="messagesLink"><a href="/messages">Messages</a></li>
+                    <li class="hidden" id="logoutLink"><a href="#" onclick="logout()">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Messages Content -->
+    <div class="container mt-4">
+        <h1>Messages</h1>
+        
+        <div class="chat-container mt-4">
+            <!-- Conversations Sidebar -->
+            <div class="chat-sidebar" id="conversationsList">
+                <div class="text-center p-4">
+                    <div class="spinner"></div>
+                    <p class="mt-2">Loading conversations...</p>
+                </div>
+            </div>
+            
+            <!-- Chat Main Area -->
+            <div class="chat-main">
+                <div class="chat-header" id="chatHeader">
+                    <h3>Select a conversation</h3>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <p class="text-center p-4">Select a conversation to view messages</p>
+                </div>
+                
+                <div class="chat-input hidden" id="chatInputContainer">
+                    <input type="text" id="messageInput" placeholder="Type a message...">
+                    <button id="sendMessageBtn"><i class="fas fa-paper-plane"></i> Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h3>GreenStay</h3>
+                    <ul>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/careers">Careers</a></li>
+                        <li><a href="/press">Press</a></li>
+                        <li><a href="/policies">Policies</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Discover</h3>
+                    <ul>
+                        <li><a href="/trust">Trust & Safety</a></li>
+                        <li><a href="/travel-credit">Travel Credit</a></li>
+                        <li><a href="/gift-cards">Gift Cards</a></li>
+                        <li><a href="/business-travel">Business Travel</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Hosting</h3>
+                    <ul>
+                        <li><a href="/host">Why Host</a></li>
+                        <li><a href="/hospitality">Hospitality</a></li>
+                        <li><a href="/responsible-hosting">Responsible Hosting</a></li>
+                        <li><a href="/community-center">Community Center</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="/help">Help Center</a></li>
+                        <li><a href="/neighbors">Neighborhood Support</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 GreenStay, Inc. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+    <script>
+        let currentConversationUserId = null;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            if (!localStorage.getItem('token')) {
+                window.location.href = '/login?redirect=/messages';
+                return;
+            }
+            
+            // Update navigation
+            checkAuthStatus();
+            
+            // Load conversations
+            loadConversations();
+            
+            // Setup message sending
+            setupMessageSending();
+        });
+        
+        // Load conversations
+        function loadConversations() {
+            fetchConversations()
+                .then(conversations => {
+                    const conversationsList = document.getElementById('conversationsList');
+                    
+                    if (conversations.length === 0) {
+                        conversationsList.innerHTML = `
+                            <div class="text-center p-4">
+                                <p>No conversations yet.</p>
+                                <p class="mt-2">Start a conversation by messaging a host from a property page.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    let html = '';
+                    conversations.forEach(conversation => {
+                        const user = conversation.user;
+                        const latestMessage = conversation.latest_message;
+                        const unreadCount = conversation.unread_count;
+                        
+                        const messagePreview = latestMessage ? 
+                            (latestMessage.content.length > 30 ? 
+                                latestMessage.content.substring(0, 30) + '...' : 
+                                latestMessage.content) : 
+                            'No messages yet';
+                        
+                        const messageTime = latestMessage ? 
+                            formatMessageTime(latestMessage.created_at) : 
+                            '';
+                        
+                        const unreadBadge = unreadCount > 0 ? 
+                            `<span class="unread-badge">${unreadCount}</span>` : 
+                            '';
+                        
+                        html += `
+                            <div class="conversation-item ${unreadCount > 0 ? 'unread' : ''}" data-user-id="${user.id}">
+                                <div class="conversation-avatar">
+                                    <img src="https://ui-avatars.com/api/?name=${user.username}&background=0F5132&color=fff" alt="${user.username}">
+                                    ${unreadBadge}
+                                </div>
+                                <div class="conversation-details">
+                                    <div class="conversation-header">
+                                        <h4>${user.username}</h4>
+                                        <span class="conversation-time">${messageTime}</span>
+                                    </div>
+                                    <p class="conversation-preview">${messagePreview}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    conversationsList.innerHTML = html;
+                    
+                    // Add click event listeners to conversation items
+                    document.querySelectorAll('.conversation-item').forEach(item => {
+                        item.addEventListener('click', function() {
+                            const userId = this.getAttribute('data-user-id');
+                            loadConversation(userId);
+                            
+                            // Update selected conversation
+                            document.querySelectorAll('.conversation-item').forEach(i => {
+                                i.classList.remove('selected');
+                            });
+                            this.classList.add('selected');
+                            this.classList.remove('unread');
+                            
+                            // Remove unread badge
+                            const unreadBadge = this.querySelector('.unread-badge');
+                            if (unreadBadge) {
+                                unreadBadge.remove();
+                            }
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading conversations:', error);
+                    document.getElementById('conversationsList').innerHTML = 
+                        '<p class="text-center p-4 text-error">Error loading conversations. Please try again later.</p>';
+                });
+        }
+        
+        // Load conversation messages
+        function loadConversation(userId) {
+            currentConversationUserId = userId;
+            
+            // Show loading spinner
+            document.getElementById('chatMessages').innerHTML = `
+                <div class="text-center p-4">
+                    <div class="spinner"></div>
+                    <p class="mt-2">Loading messages...</p>
+                </div>
+            `;
+            
+            // Show chat input
+            document.getElementById('chatInputContainer').classList.remove('hidden');
+            
+            fetchConversation(userId)
+                .then(messages => {
+                    // Get user details
+                    const conversationItem = document.querySelector(`.conversation-item[data-user-id="${userId}"]`);
+                    const username = conversationItem.querySelector('h4').textContent;
+                    
+                    // Update chat header
+                    document.getElementById('chatHeader').innerHTML = `
+                        <div class="d-flex align-center">
+                            <img src="https://ui-avatars.com/api/?name=${username}&background=0F5132&color=fff" alt="${username}" class="chat-avatar">
+                            <h3>${username}</h3>
+                        </div>
+                    `;
+                    
+                    const chatMessages = document.getElementById('chatMessages');
+                    
+                    if (messages.length === 0) {
+                        chatMessages.innerHTML = `
+                            <p class="text-center p-4">No messages yet. Start the conversation!</p>
+                        `;
+                        return;
+                    }
+                    
+                    // Group messages by date
+                    const messagesByDate = groupMessagesByDate(messages);
+                    
+                    let html = '';
+                    Object.keys(messagesByDate).forEach(date => {
+                        html += `<div class="message-date-divider">${date}</div>`;
+                        
+                        messagesByDate[date].forEach(message => {
+                            const currentUser = JSON.parse(localStorage.getItem('user'));
+                            const isSent = message.sender_id === currentUser.id;
+                            
+                            html += `
+                                <div class="chat-message ${isSent ? 'sent' : 'received'}">
+                                    <div class="message-content">${message.content}</div>
+                                    <div class="message-time">${formatMessageTime(message.created_at)}</div>
+                                </div>
+                            `;
+                        });
+                    });
+                    
+                    chatMessages.innerHTML = html;
+                    
+                    // Scroll to bottom
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                })
+                .catch(error => {
+                    console.error('Error loading conversation:', error);
+                    document.getElementById('chatMessages').innerHTML = 
+                        '<p class="text-center p-4 text-error">Error loading messages. Please try again later.</p>';
+                });
+        }
+        
+        // Setup message sending
+        function setupMessageSending() {
+            const messageInput = document.getElementById('messageInput');
+            const sendButton = document.getElementById('sendMessageBtn');
+            
+            // Send message on button click
+            sendButton.addEventListener('click', sendMessage);
+            
+            // Send message on Enter key
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        }
+        
+        // Send message
+        function sendMessage() {
+            if (!currentConversationUserId) return;
+            
+            const messageInput = document.getElementById('messageInput');
+            const content = messageInput.value.trim();
+            
+            if (!content) return;
+            
+            // Clear input
+            messageInput.value = '';
+            
+            // Add message to UI immediately
+            const chatMessages = document.getElementById('chatMessages');
+            const currentUser = JSON.parse(localStorage.getItem('user'));
+            
+            const messageElement = document.createElement('div');
+            messageElement.className = 'chat-message sent';
+            messageElement.innerHTML = `
+                <div class="message-content">${content}</div>
+                <div class="message-time">Just now</div>
+            `;
+            
+            chatMessages.appendChild(messageElement);
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Send message to server
+            sendMessage({
+                receiver_id: currentConversationUserId,
+                content: content
+            })
+            .then(data => {
+                // Update conversation list
+                loadConversations();
+            })
+            .catch(error => {
+                console.error('Error sending message:', error);
+                
+                // Show error in UI
+                messageElement.classList.add('error');
+                messageElement.querySelector('.message-time').textContent = 'Failed to send';
+            });
+        }
+        
+        // Group messages by date
+        function groupMessagesByDate(messages) {
+            const groups = {};
+            
+            messages.forEach(message => {
+                const date = new Date(message.created_at).toLocaleDateString(undefined, {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                if (!groups[date]) {
+                    groups[date] = [];
+                }
+                
+                groups[date].push(message);
+            });
+            
+            return groups;
+        }
+        
+        // 
+(Content truncated due to size limit. Use line ranges to read in chunks)

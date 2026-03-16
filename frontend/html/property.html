@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenStay - Property Details</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">Green<span>Stay</span></a>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/properties">Properties</a></li>
+                    <li><a href="/become-host">Become a Host</a></li>
+                    <li><a href="/login" id="loginLink">Login</a></li>
+                    <li><a href="/register" id="registerLink">Register</a></li>
+                    <li class="hidden" id="profileLink"><a href="/profile">My Profile</a></li>
+                    <li class="hidden" id="bookingsLink"><a href="/bookings">My Bookings</a></li>
+                    <li class="hidden" id="messagesLink"><a href="/messages">Messages</a></li>
+                    <li class="hidden" id="logoutLink"><a href="#" onclick="logout()">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Property Details -->
+    <div class="container mt-4">
+        <div id="propertyDetails">
+            <div class="text-center p-4">
+                <div class="spinner"></div>
+                <p class="mt-2">Loading property details...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Section -->
+    <div class="container mt-4">
+        <div id="bookingSection" class="hidden">
+            <h2>Book this property</h2>
+            <div class="row">
+                <div class="col">
+                    <div class="card p-3">
+                        <div id="bookingError" class="text-error mb-3 hidden"></div>
+                        <div id="bookingSuccess" class="text-success mb-3 hidden"></div>
+                        
+                        <form id="bookingForm">
+                            <div class="form-group">
+                                <label for="checkInDate" class="form-label">Check In Date</label>
+                                <input type="date" id="checkInDate" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="checkOutDate" class="form-label">Check Out Date</label>
+                                <input type="date" id="checkOutDate" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="guests" class="form-label">Number of Guests</label>
+                                <select id="guests" class="form-control" required>
+                                    <option value="1">1 Guest</option>
+                                    <option value="2">2 Guests</option>
+                                    <option value="3">3 Guests</option>
+                                    <option value="4">4 Guests</option>
+                                    <option value="5">5 Guests</option>
+                                    <option value="6">6 Guests</option>
+                                </select>
+                            </div>
+                            
+                            <div class="booking-summary hidden" id="bookingSummary">
+                                <h3>Booking Summary</h3>
+                                <div class="d-flex justify-between mb-2">
+                                    <span>$<span id="pricePerNight">0</span> x <span id="nightCount">0</span> nights</span>
+                                    <span>$<span id="totalPrice">0</span></span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-between mb-2">
+                                    <strong>Total</strong>
+                                    <strong>$<span id="finalPrice">0</span></strong>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group mt-3">
+                                <button type="submit" class="btn btn-primary w-100">Book Now</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="container mt-4">
+        <div id="reviewsSection" class="hidden">
+            <h2>Reviews</h2>
+            <div id="reviewsList">
+                <!-- Reviews will be loaded dynamically -->
+            </div>
+            
+            <div id="addReviewSection" class="hidden mt-4">
+                <h3>Write a Review</h3>
+                <div id="reviewError" class="text-error mb-3 hidden"></div>
+                <div id="reviewSuccess" class="text-success mb-3 hidden"></div>
+                
+                <form id="reviewForm">
+                    <div class="form-group">
+                        <label for="rating" class="form-label">Rating</label>
+                        <select id="rating" class="form-control" required>
+                            <option value="5">5 Stars - Excellent</option>
+                            <option value="4">4 Stars - Very Good</option>
+                            <option value="3">3 Stars - Good</option>
+                            <option value="2">2 Stars - Fair</option>
+                            <option value="1">1 Star - Poor</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="comment" class="form-label">Comment</label>
+                        <textarea id="comment" class="form-control" rows="4" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Host Section -->
+    <div class="container mt-4 mb-4">
+        <div id="contactHostSection" class="hidden">
+            <h2>Contact Host</h2>
+            <div class="card p-3">
+                <div id="messageError" class="text-error mb-3 hidden"></div>
+                <div id="messageSuccess" class="text-success mb-3 hidden"></div>
+                
+                <form id="messageForm">
+                    <div class="form-group">
+                        <label for="messageContent" class="form-label">Message</label>
+                        <textarea id="messageContent" class="form-control" rows="4" placeholder="Ask the host a question about this property..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h3>GreenStay</h3>
+                    <ul>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/careers">Careers</a></li>
+                        <li><a href="/press">Press</a></li>
+                        <li><a href="/policies">Policies</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Discover</h3>
+                    <ul>
+                        <li><a href="/trust">Trust & Safety</a></li>
+                        <li><a href="/travel-credit">Travel Credit</a></li>
+                        <li><a href="/gift-cards">Gift Cards</a></li>
+                        <li><a href="/business-travel">Business Travel</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Hosting</h3>
+                    <ul>
+                        <li><a href="/host">Why Host</a></li>
+                        <li><a href="/hospitality">Hospitality</a></li>
+                        <li><a href="/responsible-hosting">Responsible Hosting</a></li>
+                        <li><a href="/community-center">Community Center</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="/help">Help Center</a></li>
+                        <li><a href="/neighbors">Neighborhood Support</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 GreenStay, Inc. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+    <script>
+        let property = null;
+        let propertyId = null;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication status
+            checkAuthStatus();
+            
+            // Get property ID from URL
+            const urlParts = window.location.pathname.split('/');
+            propertyId = urlParts[urlParts.length - 1];
+            
+            // Load property details
+            loadPropertyDetails();
+            
+            // Load reviews
+            loadPropertyReviews();
+            
+            // Setup booking form
+            setupBookingForm();
+            
+            // Setup review form
+            setupReviewForm();
+            
+            // Setup message form
+            setupMessageForm();
+        });
+        
+        // Load property details
+        function loadPropertyDetails() {
+            fetchProperty(propertyId)
+                .then(data => {
+                    property = data;
+                    displayPropertyDetails(property);
+                    
+                    // Show booking section
+                    document.getElementById('bookingSection').classList.remove('hidden');
+                    
+                    // Show reviews section
+                    document.getElementById('reviewsSection').classList.remove('hidden');
+                    
+                    // Show contact host section if user is logged in
+                    if (localStorage.getItem('token')) {
+                        document.getElementById('contactHostSection').classList.remove('hidden');
+                    }
+                    
+                    // Set price per night in booking form
+                    document.getElementById('pricePerNight').textContent = property.price_per_night;
+                    
+                    // Set max guests in booking form
+                    const guestsSelect = document.getElementById('guests');
+                    guestsSelect.innerHTML = '';
+                    for (let i = 1; i <= property.max_guests; i++) {
+                        const option = document.createElement('option');
+                        option.value = i;
+                        option.textContent = i === 1 ? '1 Guest' : `${i} Guests`;
+                        guestsSelect.appendChild(option);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading property:', error);
+                    document.getElementById('propertyDetails').innerHTML = 
+                        '<p class="text-center p-4 text-error">Error loading property details. Please try again later.</p>';
+                });
+        }
+        
+        // Display property details
+        function displayPropertyDetails(property) {
+            let imagesHtml = '';
+            if (property.images && property.images.length > 0) {
+                imagesHtml = `
+                    <div class="property-images">
+                        <img src="${property.images[0].image_url}" alt="${property.title}" class="property-main-image">
+                        <div class="property-image-grid">
+                            ${property.images.slice(1, 5).map(image => 
+                                `<img src="${image.image_url}" alt="${property.title}" class="property-thumbnail">`
+                            ).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                imagesHtml = `
+                    <div class="property-images">
+                        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267" alt="${property.title}" class="property-main-image">
+                    </div>
+                `;
+            }
+            
+            let amenitiesHtml = '';
+            const amenities = [
+                { name: 'WiFi', value: property.has_wifi, icon: 'fa-wifi' },
+                { name: 'Kitchen', value: property.has_kitchen, icon: 'fa-utensils' },
+                { name: 'Air Conditioning', value: property.has_ac, icon: 'fa-snowflake' },
+                { name: 'Heating', value: property.has_heating, icon: 'fa-temperature-high' },
+                { name: 'TV', value: property.has_tv, icon: 'fa-tv' },
+                { name: 'Parking', value: property.has_parking, icon: 'fa-car' },
+                { name: 'Pool', value: property.has_pool, icon: 'fa-swimming-pool' }
+            ];
+            
+            amenitiesHtml = `
+                <div class="property-amenities">
+                    <h3>Amenities</h3>
+                    <div class="amenities-grid">
+                        ${amenities.filter(a => a.value).map(amenity => 
+                            `<div class="amenity-item">
+                                <i class="fas ${amenity.icon}"></i>
+                                <span>${amenity.name}</span>
+                            </div>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+            
+            const html = `
+                <h1>${property.title}</h1>
+                <p class="property-location"><i class="fas fa-map-marker-alt"></i> ${property.location}</p>
+                
+                ${imagesHtml}
+                
+                <div class="property-details-grid mt-4">
+                    <div class="property-info">
+                        <div class="property-features mb-3">
+                            <span class="property-feature"><i class="fas fa-bed"></i> ${property.bedrooms} Bedroom${property.bedrooms !== 1 ? 's' : ''}</span>
+                            <span class="property-feature"><i class="fas fa-bath"></i> ${property.bathrooms} Bathroom${property.bathrooms !== 1 ? 's' : ''}</span>
+                            <span class="property-feature"><i class="fas fa-user"></i> ${property.max_guests} Guest${property.max_guests !== 1 ? 's' : ''}</span>
+                            <span class="property-feature"><i class="fas fa-home"></i> ${property.property_type}</span>
+                        </div>
+                        
+                        <h3>Description</h3>
+                        <p>${property.description}</p>
+                        
+                        ${amenitiesHtml}
+                    </div>
+                    
+                    <div class="property-price-card">
+                        <div class="card p-3">
+                            <h2 class="card-price">$${pr
+(Content truncated due to size limit. Use line ranges to read in chunks)

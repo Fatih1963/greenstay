@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenStay - Login</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">Green<span>Stay</span></a>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/properties">Properties</a></li>
+                    <li><a href="/become-host">Become a Host</a></li>
+                    <li><a href="/login" id="loginLink">Login</a></li>
+                    <li><a href="/register" id="registerLink">Register</a></li>
+                    <li class="hidden" id="profileLink"><a href="/profile">My Profile</a></li>
+                    <li class="hidden" id="bookingsLink"><a href="/bookings">My Bookings</a></li>
+                    <li class="hidden" id="messagesLink"><a href="/messages">Messages</a></li>
+                    <li class="hidden" id="logoutLink"><a href="#" onclick="logout()">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Login Form -->
+    <div class="container">
+        <div class="auth-container">
+            <h2 class="auth-title">Login to GreenStay</h2>
+            
+            <div id="errorMessage" class="text-error mb-3 hidden"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary w-100">Login</button>
+                </div>
+            </form>
+            
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="/register">Register</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h3>GreenStay</h3>
+                    <ul>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/careers">Careers</a></li>
+                        <li><a href="/press">Press</a></li>
+                        <li><a href="/policies">Policies</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Discover</h3>
+                    <ul>
+                        <li><a href="/trust">Trust & Safety</a></li>
+                        <li><a href="/travel-credit">Travel Credit</a></li>
+                        <li><a href="/gift-cards">Gift Cards</a></li>
+                        <li><a href="/business-travel">Business Travel</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Hosting</h3>
+                    <ul>
+                        <li><a href="/host">Why Host</a></li>
+                        <li><a href="/hospitality">Hospitality</a></li>
+                        <li><a href="/responsible-hosting">Responsible Hosting</a></li>
+                        <li><a href="/community-center">Community Center</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="/help">Help Center</a></li>
+                        <li><a href="/neighbors">Neighborhood Support</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 GreenStay, Inc. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is already logged in
+            if (localStorage.getItem('token')) {
+                window.location.href = '/';
+                return;
+            }
+            
+            // Handle login form submission
+            const loginForm = document.getElementById('loginForm');
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                // Clear previous error messages
+                document.getElementById('errorMessage').classList.add('hidden');
+                
+                // Attempt login
+                login(email, password)
+                    .then(data => {
+                        // Check for redirect parameter
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const redirect = urlParams.get('redirect');
+                        
+                        // Redirect user
+                        window.location.href = redirect || '/';
+                    })
+                    .catch(error => {
+                        // Display error message
+                        const errorMessage = document.getElementById('errorMessage');
+                        errorMessage.textContent = 'Invalid email or password. Please try again.';
+                        errorMessage.classList.remove('hidden');
+                    });
+            });
+        });
+    </script>
+</body>
+</html>

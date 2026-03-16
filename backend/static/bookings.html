@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenStay - My Bookings</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">Green<span>Stay</span></a>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/properties">Properties</a></li>
+                    <li><a href="/become-host">Become a Host</a></li>
+                    <li><a href="/login" id="loginLink">Login</a></li>
+                    <li><a href="/register" id="registerLink">Register</a></li>
+                    <li class="hidden" id="profileLink"><a href="/profile">My Profile</a></li>
+                    <li class="hidden" id="bookingsLink"><a href="/bookings">My Bookings</a></li>
+                    <li class="hidden" id="messagesLink"><a href="/messages">Messages</a></li>
+                    <li class="hidden" id="logoutLink"><a href="#" onclick="logout()">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Bookings Content -->
+    <div class="container mt-4">
+        <h1>My Bookings</h1>
+        
+        <ul class="nav-tabs mt-3">
+            <li class="nav-item">
+                <a class="nav-link active" id="guestTab" href="#guest">My Trips</a>
+            </li>
+            <li class="nav-item hidden" id="hostTabItem">
+                <a class="nav-link" id="hostTab" href="#host">Host Bookings</a>
+            </li>
+        </ul>
+        
+        <div class="tab-content mt-3">
+            <!-- Guest Bookings Tab -->
+            <div class="tab-pane active" id="guestBookings">
+                <div id="guestBookingsList">
+                    <div class="text-center p-4">
+                        <div class="spinner"></div>
+                        <p class="mt-2">Loading your bookings...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Host Bookings Tab -->
+            <div class="tab-pane hidden" id="hostBookings">
+                <div id="hostBookingsList">
+                    <div class="text-center p-4">
+                        <div class="spinner"></div>
+                        <p class="mt-2">Loading host bookings...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h3>GreenStay</h3>
+                    <ul>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/careers">Careers</a></li>
+                        <li><a href="/press">Press</a></li>
+                        <li><a href="/policies">Policies</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Discover</h3>
+                    <ul>
+                        <li><a href="/trust">Trust & Safety</a></li>
+                        <li><a href="/travel-credit">Travel Credit</a></li>
+                        <li><a href="/gift-cards">Gift Cards</a></li>
+                        <li><a href="/business-travel">Business Travel</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Hosting</h3>
+                    <ul>
+                        <li><a href="/host">Why Host</a></li>
+                        <li><a href="/hospitality">Hospitality</a></li>
+                        <li><a href="/responsible-hosting">Responsible Hosting</a></li>
+                        <li><a href="/community-center">Community Center</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="/help">Help Center</a></li>
+                        <li><a href="/neighbors">Neighborhood Support</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 GreenStay, Inc. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            if (!localStorage.getItem('token')) {
+                window.location.href = '/login?redirect=/bookings';
+                return;
+            }
+            
+            // Update navigation
+            checkAuthStatus();
+            
+            // Check if user is a host
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user && user.is_host) {
+                document.getElementById('hostTabItem').classList.remove('hidden');
+            }
+            
+            // Load guest bookings
+            loadGuestBookings();
+            
+            // Setup tab navigation
+            setupTabs();
+        });
+        
+        // Setup tab navigation
+        function setupTabs() {
+            const guestTab = document.getElementById('guestTab');
+            const hostTab = document.getElementById('hostTab');
+            
+            guestTab.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update active tab
+                guestTab.classList.add('active');
+                hostTab.classList.remove('active');
+                
+                // Show guest bookings, hide host bookings
+                document.getElementById('guestBookings').classList.remove('hidden');
+                document.getElementById('guestBookings').classList.add('active');
+                document.getElementById('hostBookings').classList.add('hidden');
+                document.getElementById('hostBookings').classList.remove('active');
+                
+                // Load guest bookings
+                loadGuestBookings();
+            });
+            
+            hostTab.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update active tab
+                hostTab.classList.add('active');
+                guestTab.classList.remove('active');
+                
+                // Show host bookings, hide guest bookings
+                document.getElementById('hostBookings').classList.remove('hidden');
+                document.getElementById('hostBookings').classList.add('active');
+                document.getElementById('guestBookings').classList.add('hidden');
+                document.getElementById('guestBookings').classList.remove('active');
+                
+                // Load host bookings
+                loadHostBookings();
+            });
+        }
+        
+        // Load guest bookings
+        function loadGuestBookings() {
+            fetchUserBookings()
+                .then(bookings => {
+                    const bookingsList = document.getElementById('guestBookingsList');
+                    
+                    if (bookings.length === 0) {
+                        bookingsList.innerHTML = `
+                            <div class="text-center p-4">
+                                <p>You don't have any bookings yet.</p>
+                                <a href="/" class="btn btn-primary mt-3">Find a Place to Stay</a>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    // Group bookings by status
+                    const upcomingBookings = bookings.filter(b => b.status === 'confirmed' && new Date(b.check_in_date) > new Date());
+                    const pendingBookings = bookings.filter(b => b.status === 'pending');
+                    const pastBookings = bookings.filter(b => b.status === 'completed' || new Date(b.check_out_date) < new Date());
+                    const cancelledBookings = bookings.filter(b => b.status === 'cancelled');
+                    
+                    let html = '';
+                    
+                    // Upcoming bookings
+                    if (upcomingBookings.length > 0) {
+                        html += `
+                            <h2 class="mt-4">Upcoming Trips</h2>
+                            <div class="booking-grid">
+                                ${upcomingBookings.map(booking => createBookingCard(booking, 'guest')).join('')}
+                            </div>
+                        `;
+                    }
+                    
+                    // Pending bookings
+                    if (pendingBookings.length > 0) {
+                        html += `
+                            <h2 class="mt-4">Pending Bookings</h2>
+                            <div class="booking-grid">
+                                ${pendingBookings.map(booking => createBookingCard(booking, 'guest')).join('')}
+                            </div>
+                        `;
+                    }
+                    
+                    // Past bookings
+                    if (pastBookings.length > 0) {
+                        html += `
+                            <h2 class="mt-4">Past Trips</h2>
+                            <div class="booking-grid">
+                                ${pastBookings.map(booking => createBookingCard(booking, 'guest')).join('')}
+                            </div>
+                        `;
+                    }
+                    
+                    // Cancelled bookings
+                    if (cancelledBookings.length > 0) {
+                        html += `
+                            <h2 class="mt-4">Cancelled Bookings</h2>
+                            <div class="booking-grid">
+                                ${cancelledBookings.map(booking => createBookingCard(booking, 'guest')).join('')}
+                            </div>
+                        `;
+                    }
+                    
+                    bookingsList.innerHTML = html;
+                    
+                    // Add event listeners for cancel buttons
+                    document.querySelectorAll('.cancel-booking-btn').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const bookingId = this.getAttribute('data-booking-id');
+                            cancelBooking(bookingId)
+                                .then(() => {
+                                    // Reload bookings
+                                    loadGuestBookings();
+                                })
+                                .catch(error => {
+                                    console.error('Error cancelling booking:', error);
+                                    alert('Failed to cancel booking. Please try again.');
+                                });
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading bookings:', error);
+                    document.getElementById('guestBookingsList').innerHTML = 
+                        '<p class="text-center p-4 text-error">Error loading bookings. Please try again later.</p>';
+                });
+        }
+        
+        // Load host bookings
+        function loadHostBookings() {
+            fetchHostBookings()
+                .then(bookings => {
+                    const bookingsList = document.getElementById('hostBookingsList');
+                    
+                    if (bookings.length === 0) {
+                        bookingsList.innerHTML = `
+                            <div class="text-center p-4">
+                                <p>You don't have any bookings for your properties yet.</p>
+                                <a href="/become-host" class="btn btn-primary mt-3">Manage Your Properties</a>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    // Group bookings by status
+                    const upcomingBookings = bookings.filter(b => b.status === 'confirmed' && new Date(b.check_in_date) > new Date());
+                    const pendingBookings = bookings.filter(b => b.status === 'pending');
+                    const pastBookings = bookings.filter(b => b.status === 'completed' || new Date(b.check_out_date) < new Date());
+                    const cancelledBookings = bookings.filter(b => b.status === 'cancelled');
+                    
+                    let html = '';
+                    
+                    // Pending bookings
+                    if (pendingBookings.length > 0) {
+                        html += `
+                            <h2 class="mt-4">Pending Approval</h2>
+                            <div class="booking-grid">
+                                ${pendingBookings.map(booking => createBookingCard(booking, 'host')).join('')}
+                            </div>
+                        `;
+                    }
+                    
+                    // Upcoming bookings
+                    if (upcomingBookings.length > 0) {
+                        html += `
+                            <h2 class="mt-4">Upcoming Bookings</h2>
+                            <div class="booking-grid">
+                                ${upcomingBookings.map(booking => createBookingCard(booking, 'host')).join('')}
+                            </div>
+                        `;
+                    }
+                    
+                    // Past bookings
+                    if (pastBookings.length > 0) {
+                        html += `
+                            <h2 class="mt-4">Past Bookings</h2>
+                            <div class="booking-grid">
+                                ${pastBookings.map(booking => createBookingCard(booking, 'host')).join('')}
+                            </div>
+                        `;
+                    }
+                    
+                    // Cancelled bookings
+                    if (cancelledBookings.length > 0) {
+                        html += `
+                            <h2 class="mt-4">Cancelled Bookings</h2>
+                            <div class="booking-grid">
+                                ${cancelledBookings.map(booking => createBookingCard(booking, 'host')).join('')}
+                            </div>
+                        `;
+                    }
+                    
+                    bookingsList.innerHTML = html;
+                    
+                    // Add event listeners for action buttons
+                    document.querySelectorAll('.approve-booking-btn').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const bookingId = this.getAttribute('data-booking-id');
+                            updateBookingStatus(bookingId, 'confirmed')
+                                .then(() => {
+                                    // Reload bookings
+                                    loadHostBookings();
+                                })
+                                .catch(error => {
+                                    console.error('Error approving booking:', error);
+                                    alert('Failed to approve booking. Please try again.');
+                                });
+                        });
+                    });
+                    
+                    document.querySelectorAll('.reject-booking-btn').forEach(button =
+(Content truncated due to size limit. Use line ranges to read in chunks)

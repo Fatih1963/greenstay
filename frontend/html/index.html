@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenStay - Home</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">Green<span>Stay</span></a>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/properties">Properties</a></li>
+                    <li><a href="/become-host">Become a Host</a></li>
+                    <li><a href="/login" id="loginLink">Login</a></li>
+                    <li><a href="/register" id="registerLink">Register</a></li>
+                    <li class="hidden" id="profileLink"><a href="/profile">My Profile</a></li>
+                    <li class="hidden" id="bookingsLink"><a href="/bookings">My Bookings</a></li>
+                    <li class="hidden" id="messagesLink"><a href="/messages">Messages</a></li>
+                    <li class="hidden" id="logoutLink"><a href="#" onclick="logout()">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">Find Your Perfect Getaway</h1>
+            <p class="hero-subtitle">Discover unique places to stay around the world</p>
+            <div class="search-form">
+                <div class="search-row">
+                    <div class="search-col">
+                        <div class="form-group">
+                            <label class="form-label">Location</label>
+                            <input type="text" class="form-control" id="searchLocation" placeholder="Where are you going?">
+                        </div>
+                    </div>
+                    <div class="search-col">
+                        <div class="form-group">
+                            <label class="form-label">Check In</label>
+                            <input type="date" class="form-control" id="searchCheckIn">
+                        </div>
+                    </div>
+                    <div class="search-col">
+                        <div class="form-group">
+                            <label class="form-label">Check Out</label>
+                            <input type="date" class="form-control" id="searchCheckOut">
+                        </div>
+                    </div>
+                    <div class="search-col">
+                        <div class="form-group">
+                            <label class="form-label">Guests</label>
+                            <select class="form-control" id="searchGuests">
+                                <option value="1">1 Guest</option>
+                                <option value="2">2 Guests</option>
+                                <option value="3">3 Guests</option>
+                                <option value="4">4 Guests</option>
+                                <option value="5">5+ Guests</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="search-col">
+                        <div class="form-group">
+                            <label class="form-label">&nbsp;</label>
+                            <button class="btn btn-primary w-100" onclick="searchProperties()">Search</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Properties -->
+    <section class="container mt-4">
+        <h2>Featured Places to Stay</h2>
+        <div class="property-grid" id="featuredProperties">
+            <!-- Properties will be loaded dynamically -->
+            <div class="text-center p-4">
+                <div class="spinner"></div>
+                <p class="mt-2">Loading properties...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Property Types -->
+    <section class="container mt-4">
+        <h2>Browse by Property Type</h2>
+        <div class="row mt-3">
+            <div class="col">
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688" alt="Apartment" class="card-img">
+                    <div class="card-body text-center">
+                        <h3 class="card-title">Apartments</h3>
+                        <a href="/properties?type=apartment" class="btn btn-outline">Browse Apartments</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6" alt="House" class="card-img">
+                    <div class="card-body text-center">
+                        <h3 class="card-title">Houses</h3>
+                        <a href="/properties?type=house" class="btn btn-outline">Browse Houses</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4" alt="Villa" class="card-img">
+                    <div class="card-body text-center">
+                        <h3 class="card-title">Villas</h3>
+                        <a href="/properties?type=villa" class="btn btn-outline">Browse Villas</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Destinations -->
+    <section class="container mt-4">
+        <h2>Popular Destinations</h2>
+        <div class="row mt-3">
+            <div class="col">
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1534430480872-3498386e7856" alt="New York" class="card-img">
+                    <div class="card-body text-center">
+                        <h3 class="card-title">New York</h3>
+                        <a href="/properties?location=New York" class="btn btn-outline">Explore</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34" alt="Paris" class="card-img">
+                    <div class="card-body text-center">
+                        <h3 class="card-title">Paris</h3>
+                        <a href="/properties?location=Paris" class="btn btn-outline">Explore</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e" alt="Tokyo" class="card-img">
+                    <div class="card-body text-center">
+                        <h3 class="card-title">Tokyo</h3>
+                        <a href="/properties?location=Tokyo" class="btn btn-outline">Explore</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h3>GreenStay</h3>
+                    <ul>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/careers">Careers</a></li>
+                        <li><a href="/press">Press</a></li>
+                        <li><a href="/policies">Policies</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Discover</h3>
+                    <ul>
+                        <li><a href="/trust">Trust & Safety</a></li>
+                        <li><a href="/travel-credit">Travel Credit</a></li>
+                        <li><a href="/gift-cards">Gift Cards</a></li>
+                        <li><a href="/business-travel">Business Travel</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Hosting</h3>
+                    <ul>
+                        <li><a href="/host">Why Host</a></li>
+                        <li><a href="/hospitality">Hospitality</a></li>
+                        <li><a href="/responsible-hosting">Responsible Hosting</a></li>
+                        <li><a href="/community-center">Community Center</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="/help">Help Center</a></li>
+                        <li><a href="/neighbors">Neighborhood Support</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 GreenStay, Inc. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+    <script>
+        // Check if user is logged in on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+            loadFeaturedProperties();
+        });
+
+        // Load featured properties
+        function loadFeaturedProperties() {
+            fetch('/api/properties')
+                .then(response => response.json())
+                .then(properties => {
+                    const featuredContainer = document.getElementById('featuredProperties');
+                    
+                    if (properties.length === 0) {
+                        featuredContainer.innerHTML = '<p class="text-center p-4">No properties found.</p>';
+                        return;
+                    }
+                    
+                    // Display up to 6 featured properties
+                    const featuredProperties = properties.slice(0, 6);
+                    let html = '';
+                    
+                    featuredProperties.forEach(property => {
+                        let imageUrl = 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267'; // Default image
+                        if (property.images && property.images.length > 0) {
+                            imageUrl = property.images[0].image_url;
+                        }
+                        
+                        html += `
+                            <div class="card">
+                                <img src="${imageUrl}" alt="${property.title}" class="card-img">
+                                <div class="card-body">
+                                    <h3 class="card-title">${property.title}</h3>
+                                    <p class="card-text">${property.location}</p>
+                                    <div class="property-features">
+                                        <span class="property-feature"><i class="fas fa-bed"></i> ${property.bedrooms} Bedroom${property.bedrooms !== 1 ? 's' : ''}</span>
+                                        <span class="property-feature"><i class="fas fa-bath"></i> ${property.bathrooms} Bathroom${property.bathrooms !== 1 ? 's' : ''}</span>
+                                        <span class="property-feature"><i class="fas fa-user"></i> ${property.max_guests} Guest${property.max_guests !== 1 ? 's' : ''}</span>
+                                    </div>
+                                    <p class="card-price">$${property.price_per_night} / night</p>
+                                    <a href="/property/${property.id}" class="btn btn-primary w-100">View Details</a>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    featuredContainer.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error loading properties:', error);
+                    document.getElementById('featuredProperties').innerHTML = 
+                        '<p class="text-center p-4 text-error">Error loading properties. Please try again later.</p>';
+                });
+        }
+
+        // Check authentication status
+        function checkAuthStatus() {
+            const token = localStorage.getItem('token');
+            
+            if (token) {
+                // User is logged in
+                document.getElementById('loginLink').classList.add('hidden');
+                document.getElementById('registerLink').classList.add('hidden');
+                document.getElementById('profileLink').classList.remove('hidden');
+                document.getElementById('bookingsLink').classList.remove('hidden');
+                document.getElementById('messagesLink').classList.remove('hidden');
+                document.getElementById('logoutLink').classList.remove('hidden');
+            } else {
+                // User is not logged in
+                document.getElementById('loginLink').classList.remove('hidden');
+                document.getElementById('registerLink').classList.remove('hidden');
+                document.getElementById('profileLink').classList.add('hidden');
+                document.getElementById('bookingsLink').classList.add('hidden');
+                document.getElementById('messagesLink').classList.add('hidden');
+                document.getElementById('logoutLink').classList.add('hidden');
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            checkAuthStatus();
+            window.location.href = '/';
+        }
+
+        // Search properties
+        function searchProperties() {
+            const location = document.getElementById('searchLocation').value;
+            const checkIn = document.getElementById('searchCheckIn').value;
+            const checkOut = document.getElementById('searchCheckOut').value;
+            const guests = document.getElementById('searchGuests').value;
+            
+            let searchUrl = '/properties?';
+            if (location) searchUrl += `location=${encodeURIComponent(location)}&`;
+            if (checkIn) searchUrl += `check_in=${encodeURIComponent(checkIn)}&`;
+            if (checkOut) searchUrl += `check_out=${encodeURIComponent(checkOut)}&`;
+            if (guests) searchUrl += `guests=${encodeURIComponent(guests)}`;
+            
+            window.location.href = searchUrl;
+        }
+    </script>
+</body>
+</html>
